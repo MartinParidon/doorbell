@@ -5,7 +5,7 @@
 
 // ===== Konfiguration =====
 const char* deviceName = "ESP32-BLE-PIN";
-const uint32_t richtigePIN = 1234;  // Als Zahl, nicht String!
+const uint32_t richtigePIN = 659432;  // Als Zahl, nicht String!
 const int outputPin = 2;
 const int outputDauerMs = 5000;
 
@@ -91,7 +91,7 @@ void setup() {
     pSecurity->setCapability(ESP_IO_CAP_OUT); // Display Only - zeigt PIN an
     pSecurity->setInitEncryptionKey(ESP_BLE_ENC_KEY_MASK | ESP_BLE_ID_KEY_MASK);
     pSecurity->setRespEncryptionKey(ESP_BLE_ENC_KEY_MASK | ESP_BLE_ID_KEY_MASK);
-    pSecurity->setPassKey(richtigePIN);
+    pSecurity->setPassKey(true, richtigePIN);
     
     BLEServer *pServer = BLEDevice::createServer();
     pServer->setCallbacks(new MyServerCallbacks());
