@@ -21,12 +21,11 @@ bool istAuthentifiziert = false;
 // WICHTIG: Security Callbacks für PIN-Popup
 class MySecurity : public BLESecurityCallbacks {
     uint32_t onPassKeyRequest() {
-        Serial.println("🔐 Handy fragt nach PIN - sende 1234");
         return richtigePIN;
     }
 
     void onPassKeyNotify(uint32_t pass_key) {
-        Serial.print("🔑 Handy zeigt PIN an: ");
+        Serial.print("Gebe ein auf dem Handy: ");
         Serial.println(pass_key);
     }
 
@@ -37,16 +36,16 @@ class MySecurity : public BLESecurityCallbacks {
     }
 
     bool onSecurityRequest() {
-        Serial.println("🛡️ Sicherheitsanfrage erhalten");
         return true;
     }
 
     void onAuthenticationComplete(esp_ble_auth_cmpl_t cmpl) {
         if(cmpl.success) {
-            Serial.println("✅ Authentifizierung erfolgreich!");
+            Serial.println("✅ Authentifizierung erfolgreich! Schalte Ausgang ein.");
             istAuthentifiziert = true;
             digitalWrite(outputPin, HIGH);
             delay(outputDauerMs);
+            Serial.println("Timeout vorbei. Schalte Ausang aus.");
             digitalWrite(outputPin, LOW);
         } else {
             Serial.println("❌ Authentifizierung fehlgeschlagen!");
@@ -59,7 +58,6 @@ class MyServerCallbacks: public BLEServerCallbacks {
     void onConnect(BLEServer* pServer) {
         deviceConnected = true;
         Serial.println("✅ Gerät verbunden!");
-        Serial.println("🔐 Warte auf PIN-Eingabe auf dem Handy...");
     }
 
     void onDisconnect(BLEServer* pServer) {
@@ -75,9 +73,6 @@ void setup() {
     Serial.begin(9600);
     pinMode(outputPin, OUTPUT);
     digitalWrite(outputPin, LOW);
-    
-    Serial.println("\n\n=== ESP32 BLE PIN-Popup ===");
-    Serial.println("🔐 Die PIN 1234 erscheint als Popup auf dem Handy!");
     
     // BLE initialisieren
     BLEDevice::init(deviceName);
